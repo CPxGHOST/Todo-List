@@ -1,16 +1,26 @@
-module.exports = app =>{
+const bodyParser = require('body-parser');
+const urlencodedparser = bodyParser.urlencoded({ extended: false });
 
-app.get('/todo',(req , res) => {
-    
-});
+let data = [{ item: "Get milk" }, { item: "Get Vaccine" }, { item: "Complete Project" }];
 
-app.post('/todo' , (req , res) => {
+module.exports = app => {
 
-});
+    app.get('/todo', (req, res) => {
+        res.render('todo', { todos: data });
+    });
 
-app.delete('/todo' , (req , res) => {
+    app.post('/todo', urlencodedparser, (req, res) => {
+        data.push(req.body);
+        res.json(data);
+    });
 
-});
+    app.delete('/todo/:item', (req, res) => {
+        let item = req.params.item;
+        data = data.filter(function(todo){
+            return todo.item.replace(/ /g, '-') !== req.params.item;
+        });
+        res.json(data);
+    });
 
 
 };
